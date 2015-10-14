@@ -1,0 +1,130 @@
+﻿@model CharecterEntities.Character
+
+@{
+    ViewBag.Title = Model.Details.Name;
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Character</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Experience)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Experience)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.SavingThrows)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.SavingThrows)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.SavingThrowSpecialNote)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.SavingThrowSpecialNote)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.SkillProfiencies)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.SkillProfiencies)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.SkillExcellencies)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.SkillExcellencies)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.SkillSpecialNote)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.SkillSpecialNote)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.MaxHitPoints)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.MaxHitPoints)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.HitDice)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.HitDice)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.PersonalityTraits)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PersonalityTraits)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Ideals)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Ideals)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Bonds)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Bonds)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Flaws)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Flaws)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Features)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Features)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Traits)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Traits)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

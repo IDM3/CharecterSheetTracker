@@ -1,0 +1,46 @@
+﻿@model IEnumerable<CharecterEntities.Character>
+
+@{
+    ViewBag.Title = "Charecters";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            Name
+        </th>
+        <th>
+            Player
+        </th>
+        <th>
+            Level
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Details.Name)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Details.PlayerName)
+        </td>
+        <td>
+            @item.ClassLevels.Sum(x => x.Value)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
+            @Html.ActionLink("Sheet", "CharecterSheet", new { id = item.Id }) |
+            @Html.ActionLink("Alt Sheet", "CharecterSheet", new { id = item.Id, isAlt = true }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.Id })
+        </td>
+    </tr>
+}
+
+</table>

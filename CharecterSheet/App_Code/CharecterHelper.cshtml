@@ -1,0 +1,379 @@
+﻿@helper CharectorEditor(
+        CharecterEntities.Character charecter, 
+        string formGroupClass = "form-group", 
+        string labelClass = "control-label col-md-2",
+        string validationSummaryClass = "text-danger",
+        string editorClass = "form-control"
+    )
+{
+    <div class="container">
+        <ul class="nav nav-tabs charecter">
+            <li class="active"><a href="#Details" data-toggle="tab">Details</a></li>
+            <li class=""><a href="#Overrides" data-toggle="tab">Overrides</a></li>
+            <li class=""><a href="#Roleplay" data-toggle="tab">Roleplay</a></li>
+            <li class=""><a href="#Abilities" data-toggle="tab">Abilities</a></li>
+            <li class=""><a href="#Skills" data-toggle="tab">Skills</a></li>
+            <li class=""><a href="#Class" data-toggle="tab">Class</a></li>
+            <li class=""><a href="#Items" data-toggle="tab">Items</a></li>
+        </ul>
+        <div class="tab-content">
+            <div id="Details" class="section tab-pane active">
+                <h4>
+                    Details
+                </h4>
+                <input type="hidden" id="Character.Id" name="Character.Id" value="@charecter.Id" />
+                <div class="@formGroupClass">
+                    <label for="Character.Details.Name" class="@labelClass">Character Name</label>
+                    <div class="col-md-10">
+                        <input id="Character.Details.Name" name="Character.Details.Name" type="text" value="@charecter.Details.Name" />
+                    </div>
+                </div>
+                <div class="@formGroupClass">
+                    <label for="Character.Details.PlayerName" class="@labelClass">Player Name</label>
+                    <div class="col-md-10">
+                        <input id="Character.Details.PlayerName" name="Character.Details.PlayerName" type="text" value="@charecter.Details.PlayerName" />
+                    </div>
+                </div>
+                <div class="@formGroupClass">
+                    <label for="Character.Details.Race" class="@labelClass">Race</label>
+                    <div class="col-md-10">
+                        <input id="Character.Details.Race" name="Character.Details.Race" type="text" value="@charecter.Details.Race" />
+                    </div>
+                </div>
+                <div class="@formGroupClass">
+                    <label for="Character.Experience" class="@labelClass">Experience</label>
+                    <div class="col-md-10">
+                        <input id="Character.Experience" name="Character.Experience" type="number" value="@charecter.Experience" />
+                    </div>
+                </div>
+                <div class="@formGroupClass">
+                    <label for="Character.MaxHitPoints" class="@labelClass">Max Hit Points</label>
+                    <div class="col-md-10">
+                        <input id="Character.MaxHitPoints" name="Character.MaxHitPoints" type="number" value="@charecter.MaxHitPoints" />
+                    </div>
+                </div>
+                <div class="@formGroupClass">
+                    <label for="Character.HitDice" class="@labelClass">Hit Dice</label>
+                    <div class="col-md-10">
+                        <input id="Character.HitDice" name="Character.HitDice" type="text" value="@charecter.HitDice" />
+                    </div>
+                </div>
+                <div class="@formGroupClass">
+                    <label for="Character.Speed" class="@labelClass">Speed</label>
+                    <div class="col-md-10">
+                        <input id="Character.Speed" name="Character.Speed" type="text" value="@charecter.Speed" />
+                    </div>
+                </div>
+                <div class="@formGroupClass">
+                    <label for="Character.Traits" class="@labelClass">Traits</label>
+                    <div class="col-md-10">
+                        <textarea id="Character.Traits" name="Character.Traits">@charecter.Traits</textarea>
+                    </div>
+                </div>
+                <div class="@formGroupClass">
+                    <label for="Character.OtherProfiencies" class="@labelClass">Other Profiencies</label>
+                    <div class="col-md-10">
+                        <textarea id="Character.OtherProfiencies" name="Character.OtherProfiencies">@string.Join(Environment.NewLine, charecter.OtherProfiencies)</textarea>
+                    </div>
+                </div>
+                <div class="@formGroupClass">
+                    <label for="Character.Languages" class="@labelClass">Languages</label>
+                    <div class="col-md-10">
+                        <textarea id="Character.Languages" name="Character.Languages">@string.Join(Environment.NewLine, charecter.Languages)</textarea>
+                    </div>
+                </div>
+            </div>
+            <div id="Overrides" class="section tab-pane">
+                <h4>Special Overrides</h4>
+                <div class="@formGroupClass">
+                    <label for="Character.SpecialOverides.Initiative" class="@labelClass">Inititive Override</label>
+                    <div class="col-md-10">
+                        <input id="Character.SpecialOverides.Initiative" name="Character.SpecialOverides.Initiative" type="text" value="@charecter.SpecialOverides.Initiative" />
+                    </div>
+                </div>
+                <div class="@formGroupClass">
+                    <label for="Character.SpecialOverides.ProfiencyBonus" class="@labelClass">Profeciency Override</label>
+                    <div class="col-md-10">
+                        <input id="Character.SpecialOverides.ProfiencyBonus" name="Character.SpecialOverides.ProfiencyBonus" type="text" value="@charecter.SpecialOverides.ProfiencyBonus" />
+                    </div>
+                </div>
+                <div class="@formGroupClass">
+                    <label for="Character.SpecialOverides.PassivePerception" class="@labelClass">Passive Perception Override</label>
+                    <div class="col-md-10">
+                        <input id="Character.SpecialOverides.PassivePerception" name="Character.SpecialOverides.PassivePerception" type="text" value="@charecter.SpecialOverides.PassivePerception" />
+                    </div>
+                </div>
+            </div>
+            <div id="Roleplay" class="section tab-pane">
+                <h4>Roleplay Information</h4>
+                <div class="@formGroupClass">
+                    <label for="Character.Details.Alignment" class="@labelClass">Alignment</label>
+                    <div class="col-md-10">
+                        <input id="Character.Details.Alignment" name="Character.Details.Alignment" type="text" value="@charecter.Details.Alignment" />
+                    </div>
+                </div>
+                <div class="@formGroupClass">
+                    <label for="Character.Details.Background" class="@labelClass">Background</label>
+                    <div class="col-md-10">
+                        <input id="Character.Details.Background" name="Character.Details.Background" type="text" value="@charecter.Details.Background" />
+                    </div>
+                </div>
+                <div class="@formGroupClass">
+                    <label for="Character.PersonalityTraits" class="@labelClass">Personality Traits</label>
+                    <div class="col-md-10">
+                        <textarea id="Character.PersonalityTraits" name="Character.PersonalityTraits">@charecter.PersonalityTraits</textarea>
+                    </div>
+                </div>
+                <div class="@formGroupClass">
+                    <label for="Character.Ideals" class="@labelClass">Ideals</label>
+                    <div class="col-md-10">
+                        <textarea id="Character.Ideals" name="Character.Ideals">@charecter.Ideals</textarea>
+                    </div>
+                </div>
+                <div class="@formGroupClass">
+                    <label for="Character.Bonds" class="@labelClass">Bonds</label>
+                    <div class="col-md-10">
+                        <textarea id="Character.Bonds" name="Character.Bonds">@charecter.Bonds</textarea>
+                    </div>
+                </div>
+                <div class="@formGroupClass">
+                    <label for="Character.Flaws" class="@labelClass">Flaws</label>
+                    <div class="col-md-10">
+                        <textarea id="Character.Flaws" name="Character.Flaws">@charecter.Flaws</textarea>
+                    </div>
+                </div>
+            </div>
+            <div id="Abilities" class="section tab-pane">
+                <div class="@formGroupClass">
+                    <h4>
+                        Abilities, Saves & Conditionals
+                    </h4>
+                    <div class="@formGroupClass">
+                        <label for="Character.Abilities.Strength" class="@labelClass">Strength</label>
+                        <div class="col-md-10">
+                            <input id="Character.Abilities.Strength" name="Character.Abilities.Strength" type="number" value="@charecter.Abilities.Strength" />
+                            <input id="Character.SavingThrows" name="Character.SavingThrows" type="checkbox" value="@((int)CharecterEntities.AbilityTraining.Strength)" checked="@charecter.SavingThrows.HasFlag(CharecterEntities.AbilityTraining.Strength)">
+                            <input id="Character.SavingThrowSpecialNote" name="Character.SavingThrowSpecialNote" type="checkbox" value="@((int)CharecterEntities.AbilityTraining.Strength)" checked="@charecter.SavingThrowSpecialNote.HasFlag(CharecterEntities.AbilityTraining.Strength)">
+                        </div>
+                    </div>
+                    <div class="@formGroupClass">
+                        <label for="Character.Abilities.Dexterity" class="@labelClass">Dexterity</label>
+                        <div class="col-md-10">
+                            <input id="Character.Abilities.Dexterity" name="Character.Abilities.Dexterity" type="number" value="@charecter.Abilities.Dexterity" />
+                            <input id="Character.SavingThrows" name="Character.SavingThrows" type="checkbox" value="@((int)CharecterEntities.AbilityTraining.Dexterity)" checked="@charecter.SavingThrows.HasFlag(CharecterEntities.AbilityTraining.Dexterity)">
+                            <input id="Character.SavingThrowSpecialNote" name="Character.SavingThrowSpecialNote" type="checkbox" value="@((int)CharecterEntities.AbilityTraining.Dexterity)" checked="@charecter.SavingThrowSpecialNote.HasFlag(CharecterEntities.AbilityTraining.Dexterity)">
+                        </div>
+                    </div>
+                    <div class="@formGroupClass">
+                        <label for="Character.Abilities.Constitution" class="@labelClass">Constitution</label>
+                        <div class="col-md-10">
+                            <input id="Character.Abilities.Constitution" name="Character.Abilities.Constitution" type="number" value="@charecter.Abilities.Constitution" />
+                            <input id="Character.SavingThrows" name="Character.SavingThrows" type="checkbox" value="@((int)CharecterEntities.AbilityTraining.Constitution)" checked="@charecter.SavingThrows.HasFlag(CharecterEntities.AbilityTraining.Constitution)">
+                            <input id="Character.SavingThrowSpecialNote" name="Character.SavingThrowSpecialNote" type="checkbox" value="@((int)CharecterEntities.AbilityTraining.Constitution)" checked="@charecter.SavingThrowSpecialNote.HasFlag(CharecterEntities.AbilityTraining.Constitution)">
+                        </div>
+                    </div>
+                    <div class="@formGroupClass">
+                        <label for="Character.Abilities.Intelligence" class="@labelClass">Intelligence</label>
+                        <div class="col-md-10">
+                            <input id="Character.Abilities.Intelligence" name="Character.Abilities.Intelligence" type="number" value="@charecter.Abilities.Intelligence" />
+                            <input id="Character.SavingThrows" name="Character.SavingThrows" type="checkbox" value="@((int)CharecterEntities.AbilityTraining.Intelligence)" checked="@charecter.SavingThrows.HasFlag(CharecterEntities.AbilityTraining.Intelligence)">
+                            <input id="Character.SavingThrowSpecialNote" name="Character.SavingThrowSpecialNote" type="checkbox" value="@((int)CharecterEntities.AbilityTraining.Intelligence)" checked="@charecter.SavingThrowSpecialNote.HasFlag(CharecterEntities.AbilityTraining.Intelligence)">
+                        </div>
+                    </div>
+                    <div class="@formGroupClass">
+                        <label for="Character.Abilities.Wisdom" class="@labelClass">Wisdom</label>
+                        <div class="col-md-10">
+                            <input id="Character.Abilities.Wisdom" name="Character.Abilities.Wisdom" type="number" value="@charecter.Abilities.Wisdom" />
+                            <input id="Character.SavingThrows" name="Character.SavingThrows" type="checkbox" value="@((int)CharecterEntities.AbilityTraining.Wisdom)" checked="@charecter.SavingThrows.HasFlag(CharecterEntities.AbilityTraining.Wisdom)">
+                            <input id="Character.SavingThrowSpecialNote" name="Character.SavingThrowSpecialNote" type="checkbox" value="@((int)CharecterEntities.AbilityTraining.Wisdom)" checked="@charecter.SavingThrowSpecialNote.HasFlag(CharecterEntities.AbilityTraining.Wisdom)">
+                        </div>
+                    </div>
+                    <div class="@formGroupClass">
+                        <label for="Character.Abilities.Charisma" class="@labelClass">Charisma</label>
+                        <div class="col-md-10">
+                            <input id="Character.Abilities.Charisma" name="Character.Abilities.Charisma" type="number" value="@charecter.Abilities.Charisma" />
+                            <input id="Character.SavingThrows" name="Character.SavingThrows" type="checkbox" value="@((int)CharecterEntities.AbilityTraining.Charisma)" checked="@charecter.SavingThrows.HasFlag(CharecterEntities.AbilityTraining.Charisma)">
+                            <input id="Character.SavingThrowSpecialNote" name="Character.SavingThrowSpecialNote" type="checkbox" value="@((int)CharecterEntities.AbilityTraining.Charisma)" checked="@charecter.SavingThrowSpecialNote.HasFlag(CharecterEntities.AbilityTraining.Charisma)">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="Skills" class="section tab-pane">
+                <div class="@formGroupClass">
+                    <h4>Ability Proficencies, Excellencies, and Special Notes</h4>
+                    @foreach (CharecterEntities.SkillTraining skill in Enum.GetValues(typeof(CharecterEntities.SkillTraining)))
+                    {
+                        if (skill != CharecterEntities.SkillTraining.None)
+                        {
+                            <div class="@formGroupClass">
+
+                                @switch (skill)
+                                {
+                                    case CharecterEntities.SkillTraining.AnimalHandling:
+                                        <label class="@labelClass">Animal Handling</label>
+                                        break;
+                                    case CharecterEntities.SkillTraining.SlieghtOfHand:
+                                    <label class="@labelClass">Slieght Of Hand</label>
+                                        break;
+                                    default:
+                                    <label class="@labelClass">@skill.ToString()</label>
+                                        break;
+                                }
+
+                                <div class="col-md-10">
+                                    <input id="Character.SkillProfiencies"
+                                           name="Character.SkillProfiencies"
+                                           type="checkbox"
+                                           value="@((int)skill)"
+                                           checked="@charecter.SkillProfiencies.HasFlag(skill)" />
+                                    <input id="Character.SkillExcellencies"
+                                           name="Character.SkillExcellencies"
+                                           type="checkbox"
+                                           value="@((int)skill)"
+                                           checked="@charecter.SkillExcellencies.HasFlag(skill)" />
+                                    <input id="Character.SkillSpecialNote"
+                                           name="Character.SkillSpecialNote"
+                                           type="checkbox"
+                                           value="@((int)skill)"
+                                           checked="@charecter.SkillSpecialNote.HasFlag(skill)" />
+                                </div>
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+            <div id="Class" class="section tab-pane">
+                <h4>Class Information</h4>
+                <div class="@formGroupClass">
+                    <table>
+                        <thead>
+                            <tr>
+                                <td>Class</td>
+                                <td>Level</td>
+                            </tr>
+                        </thead>
+                        @{
+                            int classIndex = 0;
+                            for (; classIndex < charecter.ClassLevels.Count; classIndex++)
+                            {
+                                <tr>
+                                    <td>
+                                        <input id="Character.ClassLevels[@classIndex].Key" name="Character.ClassLevels[@classIndex].Key" type="hidden" value="@charecter.ClassLevels.Keys.ElementAt(classIndex)" />
+                                        <label class="@labelClass" for="Character.ClassLevels[@classIndex].Value">@charecter.ClassLevels.Keys.ElementAt(classIndex)</label>
+                                    </td>
+                                    <td>
+                                        <input id="Character.ClassLevels[@classIndex].Value" name="Character.ClassLevels[@classIndex].Value" type="text" value="@charecter.ClassLevels[charecter.ClassLevels.Keys.ElementAt(classIndex)]" />
+                                    </td>
+                                </tr>
+                            }
+                            <tr>
+                                <td>
+                                    <input id="Character.ClassLevels[@classIndex].Key" name="Character.ClassLevels[@classIndex].Key" type="text" />
+                                </td>
+                                <td>
+                                    <input id="Character.ClassLevels[@classIndex].Value" name="Character.ClassLevels[@classIndex].Value" type="text" />
+                                </td>
+                            </tr>
+                        }
+                    </table>
+                </div>
+                <div class="@formGroupClass">
+                    <label for="Character.Features" class="@labelClass">Features</label>
+                    <div class="col-md-10">
+                        <textarea id="Character.Features" name="Character.Features">@charecter.Features</textarea>
+                    </div>
+                </div>
+            </div>
+            <div id="Items" class="section tab-pane">
+                <div class="@formGroupClass">
+                    <h4>
+                        Items
+                    </h4>
+
+                    @{
+                        int itemCount = 0;
+                        List<CharecterEntities.Item> items = CharecterExtensions.ItemExtensions.LoadAll(new List<CharecterEntities.Item>());
+                        List<CharecterEntities.Item> nonUsedItems;
+                        if (charecter == null)
+                        {
+                            nonUsedItems = items;
+                        }
+                        else
+                        {
+                            nonUsedItems = items.Where(x => !charecter.Items.Any(inventory => inventory.ItemHeld.Id == x.Id)).ToList();
+                        }
+                    }
+                    <table>
+                        <thead>
+                            <tr>
+                                <td>Item</td>
+                                <td>Ammount</td>
+                                <td>Equipped?</td>
+                            </tr>
+                        </thead>
+                        @for (int formNumber = 0; formNumber < charecter.Items.Count; formNumber++)
+                        {
+                            CharecterEntities.Item item = null;
+                            int inventoryId = formNumber;
+                            int itemId = charecter.Items[formNumber].ItemHeld.Id;
+                            int ammount = charecter.Items[formNumber].Count;
+                            bool equipped = charecter.Items[formNumber].Equipped;
+                            foreach (CharecterEntities.Item itemToCheck in items)
+                            {
+                                if (itemToCheck.Id == itemId)
+                                {
+                                    item = itemToCheck;
+                                    break;
+                                }
+                            }
+                            if (item != null)
+                            {
+                                itemCount++;
+                                <tr>
+                                    <td>
+                                        <input id="Character.Items[@(itemCount-1)].Id" name="Character.Items[@(itemCount-1)].Id" value="@inventoryId" type="hidden" />
+                                        <input id="Character.Items[@(itemCount-1)].ItemHeld.Id" name="Character.Items[@(itemCount-1)].ItemHeld.Id" value="@itemId" type="hidden" />
+                                        <label for="Character.Items[@(itemCount-1)].Value">@item.Name</label>
+                                    </td>
+                                    <td>
+                                        <input id="Character.Items[@(itemCount-1)].Count" name="Character.Items[@(itemCount-1)].Count" type="number" value="@ammount" />
+                                    </td>
+                                    <td>
+                                        @if (equipped)
+                                        {
+                                            <input id="Character.Items[@(itemCount-1)].Equipped" name="Character.Items[@(itemCount-1)].Equipped" type="checkbox" checked="checked" value="true" />
+                                        }
+                                        else
+                                        {
+                                            <input id="Character.Items[@(itemCount-1)].Equipped" name="Character.Items[@(itemCount-1)].Equipped" type="checkbox" value="true" />
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        @if (nonUsedItems.Count() != 0)
+                        {
+                            <tr>
+                                <td>
+                                    <select id="Character.Items[@itemCount].ItemHeld.Id" name="Character.Items[@itemCount].ItemHeld.Id">
+                                        @foreach (CharecterEntities.Item item in nonUsedItems)
+                                        {
+                                            <option value="@item.Id">@item.Name</option>
+                                        }
+                                    </select>
+                                </td>
+                                <td>
+                                    <input id="Character.Items[@itemCount].Value" name="Character.Items[@itemCount].Count" type="number" value="0" />
+                                </td>
+                                <td>
+                                    <input id="Character.Items[@(itemCount)].Equipped" name="Character.Items[@(itemCount)].Equipped" type="checkbox" value="true" />
+                                </td>
+                            </tr>
+                        }
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+}

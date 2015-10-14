@@ -1,0 +1,136 @@
+﻿@model CharecterEntities.Character
+
+@{
+    ViewBag.Title = "Delete " + Model.Details.Name;
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>Character</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Experience)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Experience)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.SavingThrows)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.SavingThrows)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.SavingThrowSpecialNote)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.SavingThrowSpecialNote)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.SkillProfiencies)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.SkillProfiencies)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.SkillExcellencies)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.SkillExcellencies)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.SkillSpecialNote)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.SkillSpecialNote)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.MaxHitPoints)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.MaxHitPoints)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.HitDice)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.HitDice)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.PersonalityTraits)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PersonalityTraits)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Ideals)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Ideals)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Bonds)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Bonds)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Flaws)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Flaws)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Features)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Features)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Traits)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Traits)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Delete" class="btn btn-default" /> |
+            @Html.ActionLink("Back to List", "Index")
+        </div>
+    }
+</div>
