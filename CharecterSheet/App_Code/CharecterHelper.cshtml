@@ -353,7 +353,7 @@
                         }
                         @if (nonUsedItems.Count() != 0)
                         {
-                            <tr>
+                            <tr id="AddItem" data-count="@itemCount">
                                 <td>
                                     <select id="Character.Items[@itemCount].ItemHeld.Id" name="Character.Items[@itemCount].ItemHeld.Id">
                                         @foreach (CharecterEntities.Item item in nonUsedItems)
@@ -367,6 +367,7 @@
                                 </td>
                                 <td>
                                     <input id="Character.Items[@(itemCount)].Equipped" name="Character.Items[@(itemCount)].Equipped" type="checkbox" value="true" />
+                                    <input id="AddItem" type="button" value="+" />
                                 </td>
                             </tr>
                         }
@@ -375,5 +376,4 @@
             </div>
         </div>
     </div>
-
 }
