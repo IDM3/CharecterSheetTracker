@@ -5,10 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using JsonDataHandler;
 using CharecterEntities;
-using Spire.Pdf;
-using Spire.Pdf.Widget;
-using Spire.Pdf.Fields;
-using Spire.Pdf.Graphics;
 using System.IO;
 using System.Reflection;
 
@@ -382,649 +378,299 @@ namespace CharecterExtensions
                 writer.Close();
                 reader.Close();
             }
-            PdfDocument doc = new PdfDocument();
-            doc.LoadFromFile(charecterSheetLocation);
-            PdfFormWidget formWidget = doc.Form as PdfFormWidget;
+
+            Dictionary<string, string> formValues = new Dictionary<string, string>();
+            formValues.Add("CharacterName", character.Details.Name);
+            formValues.Add("PlayerName", character.Details.PlayerName);
+            formValues.Add("Background", character.Details.Background);
+            formValues.Add("Race", character.Details.Race);
+            string classes = string.Join(", ", character.ClassLevels.Select(x => x.Key + " " + x.Value));
+            formValues.Add("ClassLevel", classes);
+            formValues.Add("Alignment", character.Details.Alignment);
+            string xpRepresentation;
+            if (character.Experience == 0)
+            {
+                xpRepresentation = "          /" + character.XPToNextLevel().ToString("#,#");
+            }
+            else
+            {
+                xpRepresentation = character.Experience.ToString("#,#") + "/" + character.XPToNextLevel().ToString("#,#");
+            }
+            formValues.Add("XP", xpRepresentation);
+            formValues.Add("ProfBonus", character.ProfiencyBonus().ToString("+#;-#;0"));
+            formValues.Add("STRmod", character.Abilities.Strength.ToString());
+            formValues.Add("STR", character.Abilities.Strength.Modifier().ToString("+#;-#;0"));
+            formValues.Add("DEXmod", character.Abilities.Dexterity.ToString());
+            formValues.Add("DEX", character.Abilities.Dexterity.Modifier().ToString("+#;-#;0"));
+            formValues.Add("CONmod", character.Abilities.Constitution.ToString());
+            formValues.Add("CON", character.Abilities.Constitution.Modifier().ToString("+#;-#;0"));
+            formValues.Add("INTmod", character.Abilities.Intelligence.ToString());
+            formValues.Add("INT", character.Abilities.Intelligence.Modifier().ToString("+#;-#;0"));
+            formValues.Add("WISmod", character.Abilities.Wisdom.ToString());
+            formValues.Add("WIS", character.Abilities.Wisdom.Modifier().ToString("+#;-#;0"));
+            formValues.Add("CHamod", character.Abilities.Charisma.ToString());
+            formValues.Add("CHA", character.Abilities.Charisma.Modifier().ToString("+#;-#;0"));
+            formValues.Add("Passive", character.PassivePerception());
+            formValues.Add("ProficienciesLang", string.Join(", ", character.Languages) + Environment.NewLine + string.Join(", ", character.OtherProfiencies));
+            formValues.Add("PersonalityTraits", character.PersonalityTraits);
+            formValues.Add("Ideals", character.Ideals);
+            formValues.Add("Bonds", character.Bonds);
+            formValues.Add("Flaws", character.Flaws);
+            formValues.Add("Features and Traits", (character.Features ?? string.Empty) + Environment.NewLine + (character.Traits ?? string.Empty));
+            formValues.Add("SavingThrows", character.SavingThrow(AbilityTraining.Strength).ToString("+#;-#;0") + (character.SavingThrowSpecialNote.HasFlag(AbilityTraining.Strength) ? "*" : ""));
+            formValues.Add("SavingThrows2", character.SavingThrow(AbilityTraining.Dexterity).ToString("+#;-#;0") + (character.SavingThrowSpecialNote.HasFlag(AbilityTraining.Dexterity) ? "*" : ""));
+            formValues.Add("SavingThrows3", character.SavingThrow(AbilityTraining.Constitution).ToString("+#;-#;0") + (character.SavingThrowSpecialNote.HasFlag(AbilityTraining.Constitution) ? "*" : ""));
+            formValues.Add("SavingThrows4", character.SavingThrow(AbilityTraining.Intelligence).ToString("+#;-#;0") + (character.SavingThrowSpecialNote.HasFlag(AbilityTraining.Intelligence) ? "*" : ""));
+            formValues.Add("SavingThrows5", character.SavingThrow(AbilityTraining.Wisdom).ToString("+#;-#;0") + (character.SavingThrowSpecialNote.HasFlag(AbilityTraining.Wisdom) ? "*" : ""));
+            formValues.Add("SavingThrows6", character.SavingThrow(AbilityTraining.Charisma).ToString("+#;-#;0") + (character.SavingThrowSpecialNote.HasFlag(AbilityTraining.Charisma) ? "*" : ""));
+            formValues.Add("Athletics", character.SkillRank(SkillTraining.Athletics).ToString("+#;-#;0") + (character.SkillSpecialNote.HasFlag(SkillTraining.Athletics) ? "*" : ""));
+            formValues.Add("Acrobatics", character.SkillRank(SkillTraining.Acrobatics).ToString("+#;-#;0") + (character.SkillSpecialNote.HasFlag(SkillTraining.Acrobatics) ? "*" : ""));
+            formValues.Add("SleightofHand", character.SkillRank(SkillTraining.SlieghtOfHand).ToString("+#;-#;0") + (character.SkillSpecialNote.HasFlag(SkillTraining.SlieghtOfHand) ? "*" : ""));
+            formValues.Add("Stealth", character.SkillRank(SkillTraining.Stealth).ToString("+#;-#;0") + (character.SkillSpecialNote.HasFlag(SkillTraining.Stealth) ? "*" : ""));
+            formValues.Add("Arcana", character.SkillRank(SkillTraining.Arcana).ToString("+#;-#;0") + (character.SkillSpecialNote.HasFlag(SkillTraining.Arcana) ? "*" : ""));
+            formValues.Add("History", character.SkillRank(SkillTraining.History).ToString("+#;-#;0") + (character.SkillSpecialNote.HasFlag(SkillTraining.History) ? "*" : ""));
+            formValues.Add("Investigation", character.SkillRank(SkillTraining.Investigation).ToString("+#;-#;0") + (character.SkillSpecialNote.HasFlag(SkillTraining.Investigation) ? "*" : ""));
+            formValues.Add("Nature", character.SkillRank(SkillTraining.Nature).ToString("+#;-#;0") + (character.SkillSpecialNote.HasFlag(SkillTraining.Nature) ? "*" : ""));
+            formValues.Add("Religion", character.SkillRank(SkillTraining.Religion).ToString("+#;-#;0") + (character.SkillSpecialNote.HasFlag(SkillTraining.Religion) ? "*" : ""));
+            formValues.Add("Animal", character.SkillRank(SkillTraining.AnimalHandling).ToString("+#;-#;0") + (character.SkillSpecialNote.HasFlag(SkillTraining.AnimalHandling) ? "*" : ""));
+            formValues.Add("Insight", character.SkillRank(SkillTraining.Insight).ToString("+#;-#;0") + (character.SkillSpecialNote.HasFlag(SkillTraining.Insight) ? "*" : ""));
+            formValues.Add("Medicine", character.SkillRank(SkillTraining.Medicine).ToString("+#;-#;0") + (character.SkillSpecialNote.HasFlag(SkillTraining.Medicine) ? "*" : ""));
+            formValues.Add("Perception", character.SkillRank(SkillTraining.Perception).ToString("+#;-#;0") + (character.SkillSpecialNote.HasFlag(SkillTraining.Perception) ? "*" : ""));
+            formValues.Add("Survival", character.SkillRank(SkillTraining.Survival).ToString("+#;-#;0") + (character.SkillSpecialNote.HasFlag(SkillTraining.Survival) ? "*" : ""));
+            formValues.Add("Deception", character.SkillRank(SkillTraining.Deception).ToString("+#;-#;0") + (character.SkillSpecialNote.HasFlag(SkillTraining.Deception) ? "*" : ""));
+            formValues.Add("Intimidation", character.SkillRank(SkillTraining.Intimidation).ToString("+#;-#;0") + (character.SkillSpecialNote.HasFlag(SkillTraining.Intimidation) ? "*" : ""));
+            formValues.Add("Performance", character.SkillRank(SkillTraining.Performance).ToString("+#;-#;0") + (character.SkillSpecialNote.HasFlag(SkillTraining.Performance) ? "*" : ""));
+            formValues.Add("Persuasion", character.SkillRank(SkillTraining.Persuasion).ToString("+#;-#;0") + (character.SkillSpecialNote.HasFlag(SkillTraining.Persuasion) ? "*" : ""));
+            formValues.Add("HDTotal", character.HitDice);
+            formValues.Add("HPMax", character.MaxHitPoints.ToString());
+            string initiative;
+            if(string.IsNullOrWhiteSpace(character.SpecialOverides.Initiative))
+            {
+                initiative = character.Abilities.Dexterity.Modifier().ToString("+#;-#;0");
+            }
+            else
+            {
+                initiative = character.SpecialOverides.Initiative ?? string.Empty;
+            }
+            formValues.Add("Speed", character.Speed);
+            formValues.Add("AC", character.AC().ToString());
+            formValues.Add("Initiative", initiative);
             var equippedWeapons = character.Items.Where(item => item.Equipped && !string.IsNullOrWhiteSpace(item.ItemHeld.Damage)).ToList();
             var ammunitionItems = character.Items.Where(item => item.ItemHeld.IsExpendable && item.Count > 10);
-            for(int i = 0; i < formWidget.FieldsWidget.List.Count; i++)
-            {
-                PdfField field = formWidget.FieldsWidget.List[i] as PdfField;
-                if(field is PdfTextBoxFieldWidget)
+            Func<int, string> getWeaponName = (weaponIndex) =>
                 {
-                    PdfTextBoxFieldWidget textBox = field as PdfTextBoxFieldWidget;
-                    switch(textBox.Name.Trim())
+                    string name;
+                    if (equippedWeapons.Count() > weaponIndex)
                     {
-                        case "CharacterName":
-                            textBox.Text = character.Details.Name ?? string.Empty;
-                            break;
-                        case "PlayerName":
-                            textBox.Text = character.Details.PlayerName ?? string.Empty;
-                            break;
-                        case "Background":
-                            textBox.Text = character.Details.Background ?? string.Empty;
-                            break;
-                        case "Race":
-                            textBox.Text = character.Details.Race ?? string.Empty;
-                            break;
-                        case "ClassLevel":
-                            string classes = string.Join(", ", character.ClassLevels.Select(x => x.Key + " " + x.Value));
-                            textBox.Text = classes;
-                            break;
-                        case "Alignment":
-                            textBox.Text = character.Details.Alignment ?? string.Empty;
-                            break;
-                        case "XP":
-                            if(character.Experience == 0)
-                            {
-                                textBox.Text = "          /" + character.XPToNextLevel().ToString("#,#");
-                            }
-                            else
-                            {
-                                textBox.Text = character.Experience.ToString("#,#") + "/" + character.XPToNextLevel().ToString("#,#");
-                            }
-                            break;
-                        case "ProfBonus":
-                            textBox.Text = character.ProfiencyBonus().ToString("+#;-#;0");
-                            break;
-                        case "STRmod":
-                            textBox.Text = character.Abilities.Strength.ToString();
-                            break;
-                        case "STR":
-                            textBox.Text = character.Abilities.Strength.Modifier().ToString("+#;-#;0");
-                            break;
-                        case "DEXmod":
-                            textBox.Text = character.Abilities.Dexterity.ToString();
-                            break;
-                        case "DEX":
-                            textBox.Text = character.Abilities.Dexterity.Modifier().ToString("+#;-#;0");
-                            break;
-                        case "CONmod":
-                            textBox.Text = character.Abilities.Constitution.ToString();
-                            break;
-                        case "CON":
-                            textBox.Text = character.Abilities.Constitution.Modifier().ToString("+#;-#;0");
-                            break;
-                        case "INTmod":
-                            textBox.Text = character.Abilities.Intelligence.ToString();
-                            break;
-                        case "INT":
-                            textBox.Text = character.Abilities.Intelligence.Modifier().ToString("+#;-#;0");
-                            break;
-                        case "WISmod":
-                            textBox.Text = character.Abilities.Wisdom.ToString();
-                            break;
-                        case "WIS":
-                            textBox.Text = character.Abilities.Wisdom.Modifier().ToString("+#;-#;0");
-                            break;
-                        case "CHamod":
-                            textBox.Text = character.Abilities.Charisma.ToString();
-                            break;
-                        case "CHA":
-                            textBox.Text = character.Abilities.Charisma.Modifier().ToString("+#;-#;0");
-                            break;
-                        case "Passive":
-                            textBox.Text = character.PassivePerception();
-                            break;
-                        case "ProficienciesLang":
-                            textBox.Text = string.Join(", ", character.Languages) + Environment.NewLine + string.Join(", ", character.OtherProfiencies);
-                            break;
-                        case "PersonalityTraits":
-                            textBox.Text = character.PersonalityTraits ?? string.Empty;
-                            break;
-                        case "Ideals":
-                            textBox.Text = character.Ideals ?? string.Empty;
-                            break;
-                        case "Bonds":
-                            textBox.Text = character.Bonds ?? string.Empty;
-                            break;
-                        case "Flaws":
-                            textBox.Text = character.Flaws ?? string.Empty;
-                            break;
-                        case "Features and Traits":
-                            textBox.Text = (character.Features ?? string.Empty) + Environment.NewLine + (character.Traits ?? string.Empty);
-                            break;
-                        case "SavingThrows":
-                            textBox.Text = character.SavingThrow(AbilityTraining.Strength).ToString("+#;-#;0") + (character.SavingThrowSpecialNote.HasFlag(AbilityTraining.Strength) ? "*" : "");;
-                            break;
-                        case "SavingThrows2":
-                            textBox.Text = character.SavingThrow(AbilityTraining.Dexterity).ToString("+#;-#;0") + (character.SavingThrowSpecialNote.HasFlag(AbilityTraining.Dexterity) ? "*" : "");;
-                            break;
-                        case "SavingThrows3":
-                            textBox.Text = character.SavingThrow(AbilityTraining.Constitution).ToString("+#;-#;0") + (character.SavingThrowSpecialNote.HasFlag(AbilityTraining.Constitution) ? "*" : "");;
-                            break;
-                        case "SavingThrows4":
-                            textBox.Text = character.SavingThrow(AbilityTraining.Intelligence).ToString("+#;-#;0") + (character.SavingThrowSpecialNote.HasFlag(AbilityTraining.Intelligence) ? "*" : "");;
-                            break;
-                        case "SavingThrows5":
-                            textBox.Text = character.SavingThrow(AbilityTraining.Wisdom).ToString("+#;-#;0") + (character.SavingThrowSpecialNote.HasFlag(AbilityTraining.Wisdom) ? "*" : "");;
-                            break;
-                        case "SavingThrows6":
-                            textBox.Text = character.SavingThrow(AbilityTraining.Charisma).ToString("+#;-#;0") + (character.SavingThrowSpecialNote.HasFlag(AbilityTraining.Charisma) ? "*" : "");;
-                            break;
-                        case "Athletics":
-                            textBox.Text = character.SkillRank(SkillTraining.Athletics).ToString("+#;-#;0") + (character.SkillSpecialNote.HasFlag(SkillTraining.Athletics) ? "*" : ""); ;
-                            break;
-                        case "Acrobatics":
-                            textBox.Text = character.SkillRank(SkillTraining.Acrobatics).ToString("+#;-#;0") + (character.SkillSpecialNote.HasFlag(SkillTraining.Acrobatics) ? "*" : ""); ;
-                            break;
-                        case "SleightofHand":
-                            textBox.Text = character.SkillRank(SkillTraining.SlieghtOfHand).ToString("+#;-#;0") + (character.SkillSpecialNote.HasFlag(SkillTraining.SlieghtOfHand) ? "*" : ""); ;
-                            break;
-                        case "Stealth":
-                            textBox.Text = character.SkillRank(SkillTraining.Stealth).ToString("+#;-#;0") + (character.SkillSpecialNote.HasFlag(SkillTraining.Stealth) ? "*" : ""); ;
-                            break;
-                        case "Arcana":
-                            textBox.Text = character.SkillRank(SkillTraining.Arcana).ToString("+#;-#;0") + (character.SkillSpecialNote.HasFlag(SkillTraining.Arcana) ? "*" : ""); ;
-                            break;
-                        case "History":
-                            textBox.Text = character.SkillRank(SkillTraining.History).ToString("+#;-#;0") + (character.SkillSpecialNote.HasFlag(SkillTraining.History) ? "*" : ""); ;
-                            break;
-                        case "Investigation":
-                            textBox.Text = character.SkillRank(SkillTraining.Investigation).ToString("+#;-#;0") + (character.SkillSpecialNote.HasFlag(SkillTraining.Investigation) ? "*" : ""); ;
-                            break;
-                        case "Nature":
-                            textBox.Text = character.SkillRank(SkillTraining.Nature).ToString("+#;-#;0") + (character.SkillSpecialNote.HasFlag(SkillTraining.Nature) ? "*" : ""); ;
-                            break;
-                        case "Religion":
-                            textBox.Text = character.SkillRank(SkillTraining.Religion).ToString("+#;-#;0") + (character.SkillSpecialNote.HasFlag(SkillTraining.Religion) ? "*" : ""); ;
-                            break;
-                        case "Animal":
-                            textBox.Text = character.SkillRank(SkillTraining.AnimalHandling).ToString("+#;-#;0") + (character.SkillSpecialNote.HasFlag(SkillTraining.AnimalHandling) ? "*" : ""); ;
-                            break;
-                        case "Insight":
-                            textBox.Text = character.SkillRank(SkillTraining.Insight).ToString("+#;-#;0") + (character.SkillSpecialNote.HasFlag(SkillTraining.Insight) ? "*" : ""); ;
-                            break;
-                        case "Medicine":
-                            textBox.Text = character.SkillRank(SkillTraining.Medicine).ToString("+#;-#;0") + (character.SkillSpecialNote.HasFlag(SkillTraining.Medicine) ? "*" : ""); ;
-                            break;
-                        case "Perception":
-                            textBox.Text = character.SkillRank(SkillTraining.Perception).ToString("+#;-#;0") + (character.SkillSpecialNote.HasFlag(SkillTraining.Perception) ? "*" : ""); ;
-                            break;
-                        case "Survival":
-                            textBox.Text = character.SkillRank(SkillTraining.Survival).ToString("+#;-#;0") + (character.SkillSpecialNote.HasFlag(SkillTraining.Survival) ? "*" : ""); ;
-                            break;
-                        case "Deception":
-                            textBox.Text = character.SkillRank(SkillTraining.Deception).ToString("+#;-#;0") + (character.SkillSpecialNote.HasFlag(SkillTraining.Deception) ? "*" : ""); ;
-                            break;
-                        case "Intimidation":
-                            textBox.Text = character.SkillRank(SkillTraining.Intimidation).ToString("+#;-#;0") + (character.SkillSpecialNote.HasFlag(SkillTraining.Intimidation) ? "*" : ""); ;
-                            break;
-                        case "Performance":
-                            textBox.Text = character.SkillRank(SkillTraining.Performance).ToString("+#;-#;0") + (character.SkillSpecialNote.HasFlag(SkillTraining.Performance) ? "*" : ""); ;
-                            break;
-                        case "Persuasion":
-                            textBox.Text = character.SkillRank(SkillTraining.Persuasion).ToString("+#;-#;0") + (character.SkillSpecialNote.HasFlag(SkillTraining.Persuasion) ? "*" : ""); ;
-                            break;
-                        case "HDTotal":
-                            textBox.Text = character.HitDice ?? string.Empty;
-                            break;
-                        case "HPMax":
-                            textBox.Text = character.MaxHitPoints.ToString();
-                            break;
-                        case "Initiative":
-                            if(string.IsNullOrWhiteSpace(character.SpecialOverides.Initiative))
-                            {
-                                textBox.Text = character.Abilities.Dexterity.Modifier().ToString("+#;-#;0");
-                            }
-                            else
-                            {
-                                textBox.Text = character.SpecialOverides.Initiative ?? string.Empty;
-                            }                            
-                            break;
-                        case "Speed":
-                            textBox.Text = character.Speed ?? string.Empty;
-                            break;
-                        case "AC":
-                            textBox.Text = character.AC().ToString();
-                            break;
-                        case "Wpn Name":
-                            if(equippedWeapons.Count() > 0)
-                            {
-                                if (equippedWeapons[0].Count > 1 && equippedWeapons[0].ItemHeld.Thrown)
-                                {
-                                    textBox.Text = equippedWeapons[0].ItemHeld.Name + equippedWeapons[0].Count.BoxRep();
-                                }
-                                else if (!string.IsNullOrWhiteSpace(equippedWeapons[0].ItemHeld.Range))
-                                {
-                                    textBox.Text = equippedWeapons[0].ItemHeld.Name + "(" + equippedWeapons[0].ItemHeld.Range +")";
-                                }
-                                else
-                                {
-                                    textBox.Text = equippedWeapons[0].ItemHeld.Name;
-                                }
-                            }
-                            break;
-                        case "Wpn1 AtkBonus":
-                            if (equippedWeapons.Count() > 0)
-                            {
-                                textBox.Text = equippedWeapons[0].ItemHeld.AttackModifier(character);
-                            }
-                            break;
-                        case "Wpn1 Damage":
-                            if (equippedWeapons.Count() > 0)
-                            {
-                                if (equippedWeapons[0].Count > 1 && equippedWeapons[0].ItemHeld.Thrown)
-                                {
-                                    if (equippedWeapons[0].ItemHeld.Veristile)
-                                    {
-                                        textBox.Text = equippedWeapons[0].ItemHeld.Damage
-                                            + "(" + equippedWeapons[0].ItemHeld.VeristileDmg + ")"
-                                            + equippedWeapons[0].ItemHeld.AttackModifier(character, false)
-                                            + "(" + equippedWeapons[0].ItemHeld.Range + ")";
-                                    }
-                                    else
-                                    {
-                                        textBox.Text = equippedWeapons[0].ItemHeld.Damage
-                                        + equippedWeapons[0].ItemHeld.AttackModifier(character, false)
-                                        + "(" + equippedWeapons[0].ItemHeld.Range + ")";
-                                    }
-                                }
-                                else if (equippedWeapons[0].ItemHeld.Veristile)
-                                {
-                                    textBox.Text = equippedWeapons[0].ItemHeld.Damage
-                                        + "(" + equippedWeapons[0].ItemHeld.VeristileDmg + ")"
-                                        + equippedWeapons[0].ItemHeld.AttackModifier(character, false);
-                                }
-                                else
-                                {
-                                    textBox.Text = equippedWeapons[0].ItemHeld.Damage + equippedWeapons[0].ItemHeld.AttackModifier(character, false);
-                                }
-                            }
-                            break;
-                        case "Wpn Name 2":
-                            if (equippedWeapons.Count() > 1)
-                            {
-                                if (equippedWeapons[1].Count > 1 && equippedWeapons[1].ItemHeld.Thrown)
-                                {
-                                    textBox.Text = equippedWeapons[1].ItemHeld.Name + equippedWeapons[1].Count.BoxRep();
-                                }
-                                else if (!string.IsNullOrWhiteSpace(equippedWeapons[1].ItemHeld.Range))
-                                {
-                                    textBox.Text = equippedWeapons[1].ItemHeld.Name + "(" + equippedWeapons[1].ItemHeld.Range + ")";
-                                }
-                                else
-                                {
-                                    textBox.Text = equippedWeapons[1].ItemHeld.Name;
-                                }
-                            }
-                            break;
-                        case "Wpn2 AtkBonus":
-                            if (equippedWeapons.Count() > 1)
-                            {
-                                textBox.Text = equippedWeapons[1].ItemHeld.AttackModifier(character);
-                            }
-                            break;
-                        case "Wpn2 Damage":
-                            if (equippedWeapons.Count() > 1)
-                            {
-                                if (equippedWeapons[1].Count > 1 && equippedWeapons[1].ItemHeld.Thrown)
-                                {
-                                    if (equippedWeapons[1].ItemHeld.Veristile)
-                                    {
-                                        textBox.Text = equippedWeapons[1].ItemHeld.Damage
-                                            + "(" + equippedWeapons[1].ItemHeld.VeristileDmg + ")"
-                                            + equippedWeapons[1].ItemHeld.AttackModifier(character, false)
-                                            + "(" + equippedWeapons[1].ItemHeld.Range + ")";
-                                    }
-                                    else
-                                    {
-                                        textBox.Text = equippedWeapons[1].ItemHeld.Damage
-                                        + equippedWeapons[1].ItemHeld.AttackModifier(character, false)
-                                        + "(" + equippedWeapons[1].ItemHeld.Range + ")";
-                                    }
-                                }
-                                else if(equippedWeapons[1].ItemHeld.Veristile)
-                                {
-                                    textBox.Text = equippedWeapons[1].ItemHeld.Damage 
-                                        + "(" + equippedWeapons[1].ItemHeld.VeristileDmg + ")"
-                                        + equippedWeapons[1].ItemHeld.AttackModifier(character, false);
-                                }
-                                else
-                                {
-                                    textBox.Text = equippedWeapons[1].ItemHeld.Damage + equippedWeapons[1].ItemHeld.AttackModifier(character, false);
-                                }
-                            }
-                            break;
-                        case "Wpn Name 3":
-                            if (equippedWeapons.Count() > 2)
-                            {
-                                if (equippedWeapons[2].Count > 1 && equippedWeapons[2].ItemHeld.Thrown)
-                                {
-                                    textBox.Text = equippedWeapons[2].ItemHeld.Name + equippedWeapons[2].Count.BoxRep();
-                                }
-                                else if (!string.IsNullOrWhiteSpace(equippedWeapons[2].ItemHeld.Range))
-                                {
-                                    textBox.Text = equippedWeapons[2].ItemHeld.Name + "(" + equippedWeapons[2].ItemHeld.Range + ")";
-                                }
-                                else
-                                {
-                                    textBox.Text = equippedWeapons[2].ItemHeld.Name;
-                                }
-                            }
-                            break;
-                        case "Wpn3 AtkBonus":
-                            if (equippedWeapons.Count() > 2)
-                            {
-                                textBox.Text = equippedWeapons[2].ItemHeld.AttackModifier(character);
-                            }
-                            break;
-                        case "Wpn3 Damage":
-                            if (equippedWeapons.Count() > 2)
-                            {
-                                if (equippedWeapons[2].Count > 1 && equippedWeapons[2].ItemHeld.Thrown)
-                                {
-                                    if(equippedWeapons[2].ItemHeld.Veristile)
-                                    {
-                                        textBox.Text = equippedWeapons[2].ItemHeld.Damage
-                                            + "(" + equippedWeapons[2].ItemHeld.VeristileDmg + ")"
-                                            + equippedWeapons[2].ItemHeld.AttackModifier(character, false)
-                                            + "(" + equippedWeapons[2].ItemHeld.Range + ")";
-                                    }
-                                    else
-                                    {
-                                        textBox.Text = equippedWeapons[2].ItemHeld.Damage
-                                        + equippedWeapons[2].ItemHeld.AttackModifier(character, false)
-                                        + "(" + equippedWeapons[2].ItemHeld.Range + ")";
-                                    }
-                                }
-                                else if (equippedWeapons[2].ItemHeld.Veristile)
-                                {
-                                    textBox.Text = equippedWeapons[2].ItemHeld.Damage
-                                        + "(" + equippedWeapons[2].ItemHeld.VeristileDmg + ")"
-                                        + equippedWeapons[2].ItemHeld.AttackModifier(character, false);
-                                }
-                                else
-                                {
-                                    textBox.Text = equippedWeapons[2].ItemHeld.Damage + equippedWeapons[2].ItemHeld.AttackModifier(character, false);
-                                }
-                                
-                            }
-                            break;
-                        case "AttacksSpellcasting":
-                            string additionalData = string.Empty;
-                            if(equippedWeapons.Count() > 3)
-                            {
-                                for (int equippedWeaponIndex = 3; equippedWeaponIndex < equippedWeapons.Count(); equippedWeaponIndex++)
-                                {
-                                    Item equippedWeaponToDisplay = equippedWeapons[equippedWeaponIndex].ItemHeld;
-                                    additionalData += equippedWeaponToDisplay.Name;
-                                    if (equippedWeaponToDisplay.Thrown)
-                                    {
-                                        additionalData += equippedWeapons[equippedWeaponIndex].Count.BoxRep();
-                                    }
-                                    if(!string.IsNullOrWhiteSpace(equippedWeaponToDisplay.Range))
-                                    {
-                                        additionalData += "(" + equippedWeaponToDisplay.Range + ")";
-                                    }
-                                    additionalData += " " + equippedWeaponToDisplay.AttackModifier(character);
-                                    additionalData += "(";
-                                    if(equippedWeaponToDisplay.Veristile)
-                                    {
-                                        additionalData += "[" + equippedWeaponToDisplay.Damage + "|"
-                                            + equippedWeaponToDisplay.VeristileDmg + "]";
-                                    }
-                                    else
-                                    {
-                                        additionalData += equippedWeaponToDisplay.Damage;
-                                    }
-                                    additionalData += equippedWeaponToDisplay.AttackModifier(character, false) + ")";
-                                    additionalData += Environment.NewLine;
-                                }
-                            }
-                            if (ammunitionItems.Any())
-                            {
-                                foreach(var ammunitionItem in ammunitionItems)
-                                {
-                                    additionalData += ammunitionItem.ItemHeld.Name;
-                                    additionalData += Environment.NewLine;
-                                    for(int co = 1; co < ammunitionItem.Count; )
-                                    {
-                                        for (int co2 = 0; co2 < 10; co2++)
-                                        {
-                                            additionalData += "[  ]";
-                                            co++;
-                                            if(co > ammunitionItem.Count)
-                                            {
-                                                break;
-                                            }
-                                        }
-                                        additionalData += Environment.NewLine;
-                                    }
-                                }
-                            }
-                            textBox.Text = additionalData.Trim();
-                            break;
-                        case "Equipment":
-                            textBox.Text = string.Join(", ", character.Items.Where(item =>
-                                {
-                                    bool showItemInEquipment = true;
-                                    if(item.ItemHeld.IsExpendable && item.Count > 10)
-                                    {
-                                        showItemInEquipment = false;
-                                    }
-                                    else if(item.Equipped && !string.IsNullOrWhiteSpace(item.ItemHeld.Damage))
-                                    {
-                                        showItemInEquipment = false;
-                                    }
-                                    else if(item.ItemHeld.Name.Contains("DO NOT SHOW"))
-                                    {
-                                        showItemInEquipment = false;
-                                    }
-                                    return showItemInEquipment;
-                                }).Select(x =>
-                                {
-                                    string item = x.ItemHeld.Name;
-                                    if (x.ItemHeld.IsExpendable)
-                                    {
-                                        for (int count = 0; count < x.Count; count++)
-                                        {
-                                            item = "[  ]" + item;
-                                        }
-                                    }
-                                    else if (x.Count > 1)
-                                    {
-                                        item = x.Count + " " + item;
-                                    }
-                                    else
-                                    {
-                                        //just item;
-                                    }
-                                    return item;
-                                }));
-                            break;
-                        case "HPCurrent":
-                        case "HPTemp":
-                        case "HD":
-                        case "CP":
-                        case "SP":
-                        case "EP":
-                        case "GP":
-                        case "PP":
-                        case "Inspiration":
-                            //note keeping area
-                            break;
-                        default:
-                            textBox.Text = textBox.Name;
-                            break;
+                        if (equippedWeapons[weaponIndex].Count > 1 && equippedWeapons[weaponIndex].ItemHeld.Thrown)
+                        {
+                            name = equippedWeapons[weaponIndex].ItemHeld.Name + equippedWeapons[weaponIndex].Count.BoxRep();
+                        }
+                        else if (!string.IsNullOrWhiteSpace(equippedWeapons[weaponIndex].ItemHeld.Range))
+                        {
+                            name = equippedWeapons[weaponIndex].ItemHeld.Name + "(" + equippedWeapons[weaponIndex].ItemHeld.Range + ")";
+                        }
+                        else
+                        {
+                            name = equippedWeapons[weaponIndex].ItemHeld.Name;
+                        }
                     }
-                }
-                else if (field is PdfCheckBoxWidgetFieldWidget)
-                {
-                    PdfCheckBoxWidgetFieldWidget checkBoxField = field as PdfCheckBoxWidgetFieldWidget;
-                    switch(checkBoxField.Name)
+                    else
                     {
-                        case "ST Strength":
-                            checkBoxField.Checked = character.SavingThrows.HasFlag(AbilityTraining.Strength);
-                            break;
-                        case "ST Dexterity":
-                            checkBoxField.Checked = character.SavingThrows.HasFlag(AbilityTraining.Dexterity);
-                            break;
-                        case "ST Constitution":
-                            checkBoxField.Checked = character.SavingThrows.HasFlag(AbilityTraining.Constitution);
-                            break;
-                        case "ST Intelligence":
-                            checkBoxField.Checked = character.SavingThrows.HasFlag(AbilityTraining.Intelligence);
-                            break;
-                        case "ST Wisdom":
-                            checkBoxField.Checked = character.SavingThrows.HasFlag(AbilityTraining.Wisdom);
-                            break;
-                        case "ST Charisma":
-                            checkBoxField.Checked = character.SavingThrows.HasFlag(AbilityTraining.Charisma);
-                            break;
-                        case "ChBx Athletics":
-                            if (character.SkillExcellencies.HasFlag(SkillTraining.Athletics))
+                        name = string.Empty;
+                    }
+                    return name;
+                };
+            Func<int, string> getWeaponAttack = (weaponIndex) =>
+                {
+                    string weaponAttack;
+                    if (equippedWeapons.Count() > weaponIndex)
+                    {
+                        weaponAttack = equippedWeapons[weaponIndex].ItemHeld.AttackModifier(character);
+                    }
+                    else
+                    {
+                        weaponAttack = string.Empty;
+                    }
+                    return weaponAttack;
+                };
+            Func<int, string> getWeaponDamage = (weaponIndex) =>
+                {
+                    string dmg;
+                    if (equippedWeapons.Count() > weaponIndex)
+                    {
+                        if (equippedWeapons[weaponIndex].Count > 1 && equippedWeapons[weaponIndex].ItemHeld.Thrown)
+                        {
+                            if (equippedWeapons[weaponIndex].ItemHeld.Veristile)
                             {
-                                checkBoxField.BorderStyle = PdfBorderStyle.Dashed;
-                                checkBoxField.BorderWidth = 2;
+                                dmg = equippedWeapons[weaponIndex].ItemHeld.Damage
+                                    + "(" + equippedWeapons[weaponIndex].ItemHeld.VeristileDmg + ")"
+                                    + equippedWeapons[weaponIndex].ItemHeld.AttackModifier(character, false)
+                                    + "(" + equippedWeapons[weaponIndex].ItemHeld.Range + ")";
                             }
-                            checkBoxField.Checked = character.SkillProfiencies.HasFlag(SkillTraining.Athletics);
-                            break;
-                        case "ChBx Acrobatics":
-                            if (character.SkillExcellencies.HasFlag(SkillTraining.Acrobatics))
+                            else
                             {
-                                checkBoxField.BorderStyle = PdfBorderStyle.Dashed;
-                                checkBoxField.BorderWidth = 2;
+                                dmg = equippedWeapons[weaponIndex].ItemHeld.Damage
+                                + equippedWeapons[weaponIndex].ItemHeld.AttackModifier(character, false)
+                                + "(" + equippedWeapons[weaponIndex].ItemHeld.Range + ")";
                             }
-                            checkBoxField.Checked = character.SkillProfiencies.HasFlag(SkillTraining.Acrobatics);
-                            break;
-                        case "ChBx Sleight":
-                            if (character.SkillExcellencies.HasFlag(SkillTraining.SlieghtOfHand))
+                        }
+                        else if (equippedWeapons[weaponIndex].ItemHeld.Veristile)
+                        {
+                            dmg = equippedWeapons[weaponIndex].ItemHeld.Damage
+                                + "(" + equippedWeapons[weaponIndex].ItemHeld.VeristileDmg + ")"
+                                + equippedWeapons[weaponIndex].ItemHeld.AttackModifier(character, false);
+                        }
+                        else
+                        {
+                            dmg = equippedWeapons[weaponIndex].ItemHeld.Damage + equippedWeapons[weaponIndex].ItemHeld.AttackModifier(character, false);
+                        }
+                    }
+                    else
+                    {
+                        dmg = string.Empty;
+                    }
+                    return dmg;
+                };
+            string weaponName1 = getWeaponName(0);
+            string weaponAtk1 = getWeaponAttack(0);
+            string weaponDmg1 = getWeaponDamage(0);
+            string weaponName2 = getWeaponName(1);
+            string weaponAtk2 = getWeaponAttack(1);
+            string weaponDmg2 = getWeaponDamage(1);
+            string weaponName3 = getWeaponName(2);
+            string weaponAtk3 = getWeaponAttack(2);
+            string weaponDmg3 = getWeaponDamage(2);
+            formValues.Add("Wpn Name", weaponName1);
+            formValues.Add("Wpn1 AtkBonus", weaponAtk1);
+            formValues.Add("Wpn1 Damage", weaponAtk1);
+            formValues.Add("Wpn Name 2", weaponName2);
+            formValues.Add("Wpn2 AtkBonus", weaponAtk2);
+            formValues.Add("Wpn2 Damage", weaponDmg2);
+            formValues.Add("Wpn Name 3", weaponName3);
+            formValues.Add("Wpn3 AtkBonus", weaponAtk3);
+            formValues.Add("Wpn3 Damage", weaponDmg3);
+            string additionalData = string.Empty;
+            if (equippedWeapons.Count() > 3)
+            {
+                for (int equippedWeaponIndex = 3; equippedWeaponIndex < equippedWeapons.Count(); equippedWeaponIndex++)
+                {
+                    Item equippedWeaponToDisplay = equippedWeapons[equippedWeaponIndex].ItemHeld;
+                    additionalData += equippedWeaponToDisplay.Name;
+                    if (equippedWeaponToDisplay.Thrown)
+                    {
+                        additionalData += equippedWeapons[equippedWeaponIndex].Count.BoxRep();
+                    }
+                    if (!string.IsNullOrWhiteSpace(equippedWeaponToDisplay.Range))
+                    {
+                        additionalData += "(" + equippedWeaponToDisplay.Range + ")";
+                    }
+                    additionalData += " " + equippedWeaponToDisplay.AttackModifier(character);
+                    additionalData += "(";
+                    if (equippedWeaponToDisplay.Veristile)
+                    {
+                        additionalData += "[" + equippedWeaponToDisplay.Damage + "|"
+                            + equippedWeaponToDisplay.VeristileDmg + "]";
+                    }
+                    else
+                    {
+                        additionalData += equippedWeaponToDisplay.Damage;
+                    }
+                    additionalData += equippedWeaponToDisplay.AttackModifier(character, false) + ")";
+                    additionalData += Environment.NewLine;
+                }
+            }
+            if (ammunitionItems.Any())
+            {
+                foreach (var ammunitionItem in ammunitionItems)
+                {
+                    additionalData += ammunitionItem.ItemHeld.Name;
+                    additionalData += Environment.NewLine;
+                    for (int co = 1; co < ammunitionItem.Count; )
+                    {
+                        for (int co2 = 0; co2 < 10; co2++)
+                        {
+                            additionalData += "[  ]";
+                            co++;
+                            if (co > ammunitionItem.Count)
                             {
-                                checkBoxField.BorderStyle = PdfBorderStyle.Dashed;
-                                checkBoxField.BorderWidth = 2;
+                                break;
                             }
-                            checkBoxField.Checked = character.SkillProfiencies.HasFlag(SkillTraining.SlieghtOfHand);
-                            break;
-                        case "ChBx Stealth":
-                            if (character.SkillExcellencies.HasFlag(SkillTraining.Stealth))
-                            {
-                                checkBoxField.BorderStyle = PdfBorderStyle.Dashed;
-                                checkBoxField.BorderWidth = 2;
-                            }
-                            checkBoxField.Checked = character.SkillProfiencies.HasFlag(SkillTraining.Stealth);
-                            break;
-                        case "ChBx Arcana":
-                            if (character.SkillExcellencies.HasFlag(SkillTraining.Arcana))
-                            {
-                                checkBoxField.BorderStyle = PdfBorderStyle.Dashed;
-                                checkBoxField.BorderWidth = 2;
-                            }
-                            checkBoxField.Checked = character.SkillProfiencies.HasFlag(SkillTraining.Arcana);
-                            break;
-                        case "ChBx History":
-                            if (character.SkillExcellencies.HasFlag(SkillTraining.History))
-                            {
-                                checkBoxField.BorderStyle = PdfBorderStyle.Dashed;
-                                checkBoxField.BorderWidth = 2;
-                            }
-                            checkBoxField.Checked = character.SkillProfiencies.HasFlag(SkillTraining.History);
-                            break;
-                        case "ChBx Investigation":
-                            if (character.SkillExcellencies.HasFlag(SkillTraining.Investigation))
-                            {
-                                checkBoxField.BorderStyle = PdfBorderStyle.Dashed;
-                                checkBoxField.BorderWidth = 2;
-                            }
-                            checkBoxField.Checked = character.SkillProfiencies.HasFlag(SkillTraining.Investigation);
-                            break;
-                        case "ChBx Nature":
-                            if (character.SkillExcellencies.HasFlag(SkillTraining.Nature))
-                            {
-                                checkBoxField.BorderStyle = PdfBorderStyle.Dashed;
-                                checkBoxField.BorderWidth = 2;
-                            }
-                            checkBoxField.Checked = character.SkillProfiencies.HasFlag(SkillTraining.Nature);
-                            break;
-                        case "ChBx Religion":
-                            if (character.SkillExcellencies.HasFlag(SkillTraining.Religion))
-                            {
-                                checkBoxField.BorderStyle = PdfBorderStyle.Dashed;
-                                checkBoxField.BorderWidth = 2;
-                            }
-                            checkBoxField.Checked = character.SkillProfiencies.HasFlag(SkillTraining.Religion);
-                            break;
-                        case "ChBx Animal":
-                            if (character.SkillExcellencies.HasFlag(SkillTraining.AnimalHandling))
-                            {
-                                checkBoxField.BorderStyle = PdfBorderStyle.Dashed;
-                                checkBoxField.BorderWidth = 2;
-                            }
-                            checkBoxField.Checked = character.SkillProfiencies.HasFlag(SkillTraining.AnimalHandling);
-                            break;
-                        case "ChBx Insight":
-                            if (character.SkillExcellencies.HasFlag(SkillTraining.Insight))
-                            {
-                                checkBoxField.BorderStyle = PdfBorderStyle.Dashed;
-                                checkBoxField.BorderWidth = 2;
-                            }
-                            checkBoxField.Checked = character.SkillProfiencies.HasFlag(SkillTraining.Insight);
-                            break;
-                        case "ChBx Medicine":
-                            if (character.SkillExcellencies.HasFlag(SkillTraining.Medicine))
-                            {
-                                checkBoxField.BorderStyle = PdfBorderStyle.Dashed;
-                                checkBoxField.BorderWidth = 2;
-                            }
-                            checkBoxField.Checked = character.SkillProfiencies.HasFlag(SkillTraining.Medicine);
-                            break;
-                        case "ChBx Perception":
-                            if (character.SkillExcellencies.HasFlag(SkillTraining.Perception))
-                            {
-                                checkBoxField.BorderStyle = PdfBorderStyle.Dashed;
-                                checkBoxField.BorderWidth = 2;
-                            }
-                            checkBoxField.Checked = character.SkillProfiencies.HasFlag(SkillTraining.Perception);
-                            break;
-                        case "ChBx Survival":
-                            if (character.SkillExcellencies.HasFlag(SkillTraining.Survival))
-                            {
-                                checkBoxField.BorderStyle = PdfBorderStyle.Dashed;
-                                checkBoxField.BorderWidth = 2;
-                            }
-                            checkBoxField.Checked = character.SkillProfiencies.HasFlag(SkillTraining.Survival);
-                            break;
-                        case "ChBx Deception":
-                            if (character.SkillExcellencies.HasFlag(SkillTraining.Deception))
-                            {
-                                checkBoxField.BorderStyle = PdfBorderStyle.Dashed;
-                                checkBoxField.BorderWidth = 2;
-                            }
-                            checkBoxField.Checked = character.SkillProfiencies.HasFlag(SkillTraining.Deception);
-                            break;
-                        case "ChBx Intimidation":
-                            if (character.SkillExcellencies.HasFlag(SkillTraining.Intimidation))
-                            {
-                                checkBoxField.BorderStyle = PdfBorderStyle.Dashed;
-                                checkBoxField.BorderWidth = 2;
-                            }
-                            checkBoxField.Checked = character.SkillProfiencies.HasFlag(SkillTraining.Intimidation);
-                            break;
-                        case "ChBx Performance":
-                            if (character.SkillExcellencies.HasFlag(SkillTraining.Performance))
-                            {
-                                checkBoxField.BorderStyle = PdfBorderStyle.Dashed;
-                                checkBoxField.BorderWidth = 2;
-                            }
-                            checkBoxField.Checked = character.SkillProfiencies.HasFlag(SkillTraining.Performance);
-                            break;
-                        case "ChBx Persuasion":
-                            if (character.SkillExcellencies.HasFlag(SkillTraining.Persuasion))
-                            {
-                                checkBoxField.BorderStyle = PdfBorderStyle.Dashed;
-                                checkBoxField.BorderWidth = 2;
-                            }
-                            checkBoxField.Checked = character.SkillProfiencies.HasFlag(SkillTraining.Persuasion);
-                            break;
-
+                        }
+                        additionalData += Environment.NewLine;
                     }
                 }
             }
-            string fileType = charecterSheetLocation.Split('\\').Last();
-            string file = Common.folderBase + character.Details.Name + "-Level " + character.CharecterLevel() + "-" + fileType;
-            doc.SaveToFile(file);
-            doc.Close();
-            return file;
+            additionalData = additionalData.Trim();
+            formValues.Add("AttacksSpellcasting", additionalData);
+            string equipment = string.Join(", ", character.Items.Where(item =>
+                {
+                    bool showItemInEquipment = true;
+                    if (item.ItemHeld.IsExpendable && item.Count > 10)
+                    {
+                        showItemInEquipment = false;
+                    }
+                    else if (item.Equipped && !string.IsNullOrWhiteSpace(item.ItemHeld.Damage))
+                    {
+                        showItemInEquipment = false;
+                    }
+                    else if (item.ItemHeld.Name.Contains("DO NOT SHOW"))
+                    {
+                        showItemInEquipment = false;
+                    }
+                    return showItemInEquipment;
+                }).Select(x =>
+                {
+                    string item = x.ItemHeld.Name;
+                    if (x.ItemHeld.IsExpendable)
+                    {
+                        for (int count = 0; count < x.Count; count++)
+                        {
+                            item = "[  ]" + item;
+                        }
+                    }
+                    else if (x.Count > 1)
+                    {
+                        item = x.Count + " " + item;
+                    }
+                    else
+                    {
+                        //just item;
+                    }
+                    return item;
+                }));
+            formValues.Add("Equipment", equipment);
+            Dictionary<string, bool> checks = new Dictionary<string, bool>();
+            checks.Add("ST Strength", character.SavingThrows.HasFlag(AbilityTraining.Strength));
+            checks.Add("ST Dexterity", character.SavingThrows.HasFlag(AbilityTraining.Dexterity));
+            checks.Add("ST Constitution", character.SavingThrows.HasFlag(AbilityTraining.Constitution));
+            checks.Add("ST Intelligence", character.SavingThrows.HasFlag(AbilityTraining.Intelligence));
+            checks.Add("ST Wisdom", character.SavingThrows.HasFlag(AbilityTraining.Wisdom));
+            checks.Add("ST Charisma", character.SavingThrows.HasFlag(AbilityTraining.Charisma));
+            checks.Add("ChBx Athletics", character.SkillProfiencies.HasFlag(SkillTraining.Athletics));
+            checks.Add("ChBx Acrobatics", character.SkillProfiencies.HasFlag(SkillTraining.Acrobatics));
+            checks.Add("ChBx Sleight", character.SkillProfiencies.HasFlag(SkillTraining.SlieghtOfHand));
+            checks.Add("ChBx Stealth", character.SkillProfiencies.HasFlag(SkillTraining.Stealth));
+            checks.Add("ChBx Arcana", character.SkillProfiencies.HasFlag(SkillTraining.Arcana));
+            checks.Add("ChBx History", character.SkillProfiencies.HasFlag(SkillTraining.History));
+            checks.Add("ChBx Investigation", character.SkillProfiencies.HasFlag(SkillTraining.Investigation));
+            checks.Add("ChBx Nature", character.SkillProfiencies.HasFlag(SkillTraining.Nature));
+            checks.Add("ChBx Religion", character.SkillProfiencies.HasFlag(SkillTraining.Religion));
+            checks.Add("ChBx Animal", character.SkillProfiencies.HasFlag(SkillTraining.AnimalHandling));
+            checks.Add("ChBx Insight", character.SkillProfiencies.HasFlag(SkillTraining.Insight));
+            checks.Add("ChBx Medicine", character.SkillProfiencies.HasFlag(SkillTraining.Medicine));
+            checks.Add("ChBx Perception", character.SkillProfiencies.HasFlag(SkillTraining.Perception));
+            checks.Add("ChBx Survival", character.SkillProfiencies.HasFlag(SkillTraining.Survival));
+            checks.Add("ChBx Deception", character.SkillProfiencies.HasFlag(SkillTraining.Deception));
+            checks.Add("ChBx Intimidation", character.SkillProfiencies.HasFlag(SkillTraining.Intimidation));
+            checks.Add("ChBx Performance", character.SkillProfiencies.HasFlag(SkillTraining.Performance));
+            checks.Add("ChBx Persuasion", character.SkillProfiencies.HasFlag(SkillTraining.Persuasion));
+
+            string fileType = charecterSheetLocation.Split('\\').Last().Trim();
+            string fileName = Common.folderBase + character.Details.Name + "-Level " + character.CharecterLevel() + "-" + fileType;
+            ItextSharperWrapper.PdfFormFiller filler = new ItextSharperWrapper.PdfFormFiller(charecterSheetLocation);
+            filler.FillForm(fileName, formValues, checks);
+            return fileName;
         }
     }
 }
